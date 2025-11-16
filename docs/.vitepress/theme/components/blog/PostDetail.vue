@@ -7,7 +7,7 @@ const { site } = useData()
 
 const { currentPost: post, prevPost, nextPost } = usePosts()
 const { findByName } = useAuthors()
-const author = findByName(post.value.author)
+const author = findByName(post.value.author || '杰哥')
 </script>
 
 <template>

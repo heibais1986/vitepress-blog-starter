@@ -3,7 +3,7 @@ date: 2022-08-10
 title: Basic Markdown Formatting
 category: Tutorial
 tags: vue
-
+author: 杰哥
 ---
 
 The Ultimate Guide to Markdown. __This will also be bold__

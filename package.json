@@ -17,6 +17,8 @@
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
     "serve": "vitepress serve docs",
+    "clean": "powershell -ExecutionPolicy Bypass -File ./clean.ps1",
+    "clean:build": "npm run clean && npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "release": "npm run lint && npm run build && changelogen --patch --release  && git push --follow-tags"

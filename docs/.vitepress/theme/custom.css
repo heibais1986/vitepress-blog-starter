@@ -1,0 +1,205 @@
+/* 自定义样式 */
+
+/* 移除 VitePress 默认的容器边框 */
+.VPDoc,
+.vp-doc {
+  border: none !important;
+}
+
+.vp-doc > div {
+  border: none !important;
+}
+
+/* 移除水平分隔线 */
+hr {
+  display: none !important;
+}
+
+/* 强制移除文章卡片内的所有边框线条 */
+article div,
+article h2,
+article span {
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+/* 卡片边框强制样式 */
+.post-card-link {
+  border: 4px solid #6b7280 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.post-card-link:hover {
+  border-color: #4b5563 !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* 强制移除卡片标题的默认margin和padding */
+.post-card-link h2 {
+  margin: 0 !important;
+  padding: 0 !important;
+  margin-bottom: 0.75rem !important;
+}
+
+
+/* Banner 样式 */
+.banner-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.banner-content {
+  text-align: center;
+  color: white;
+  padding: 2rem;
+  max-width: 800px;
+}
+
+.banner-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
+}
+
+.banner-description {
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  opacity: 0.95;
+}
+
+/* 响应式 Banner */
+@media (max-width: 768px) {
+  .banner-container {
+    height: 300px;
+  }
+
+  .banner-title {
+    font-size: 2rem;
+  }
+
+  .banner-description {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-container {
+    height: 250px;
+  }
+
+  .banner-title {
+    font-size: 1.5rem;
+  }
+
+  .banner-description {
+    font-size: 1rem;
+  }
+}
+
+/* 搜索框宽度加倍 */
+.VPNavBarSearch {
+  width: 200px !important;
+}
+
+.VPNavBarSearch .DocSearch {
+  width: 100%;
+}
+
+.VPNavBarSearch .DocSearch-Button {
+  width: 100% !important;
+  min-width: 200px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-right: 12px !important;
+}
+
+/* 确保搜索文本和快捷键提示正确布局 */
+.VPNavBarSearch .DocSearch-Button .DocSearch-Button-Container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.VPNavBarSearch .DocSearch-Button .DocSearch-Button-Keys {
+  display: flex !important;
+  align-items: center;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* 响应式：桌面端更宽 */
+@media (min-width: 768px) {
+  .VPNavBarSearch {
+    width: 300px !important;
+  }
+  
+  .VPNavBarSearch .DocSearch-Button {
+    min-width: 300px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .VPNavBarSearch {
+    width: 400px !important;
+  }
+  
+  .VPNavBarSearch .DocSearch-Button {
+    min-width: 400px !important;
+  }
+}
+
+
+/* 导航菜单间距缩小50% */
+.VPNavBarMenu .VPNavBarMenuGroup {
+  margin-left: 8px !important;
+  margin-right: 8px !important;
+}
+
+.VPNavBarMenuLink {
+  margin-left: 8px !important;
+  margin-right: 8px !important;
+}
+
+/* 下拉菜单文字居中 */
+.VPMenu .VPMenuLink {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+.VPMenu .VPMenuGroup .VPMenuLink {
+  text-align: center !important;
+  justify-content: center !important;
+}

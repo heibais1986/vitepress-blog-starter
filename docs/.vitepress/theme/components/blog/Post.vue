@@ -1,53 +1,80 @@
 <script setup lang='ts'>
 import type { Post } from '../../composables/posts.data'
-import { useData } from 'vitepress'
 import useAuthors from '../../composables/useAuthors'
 import PostAuthor from './PostAuthor.vue'
-import PostIcon from './PostIcon.vue'
 
 const props = defineProps<{
   post: Post
 }>()
-const { site } = useData()
 const { findByName } = useAuthors()
-const author = findByName(props.post.author)
+const author = findByName(props.post.author || '杰哥')
 </script>
 
 <template>
-  <article
-    class="p-6 rounded-lg border border-[color:var(--vp-c-brand-light)] shadow-md dark:border-[color:var(--vp-c-brand-dark)]"
+  <a
+    :href="post.href"
+    class="block rounded-xl shadow-md hover:shadow-xl transition-all duration-300 bg-white dark:bg-gray-800 cursor-pointer post-card-link"
+    style="border: 4px solid #6b7280 !important;"
   >
-    <div class="flex justify-between items-center mb-5 text-gray-500">
-      <span
-        class="bg-primary-100 text-[color:var(--vp-c-brand-light)] dark:text-[color:var(--vp-c-brand-dark)] text-sm font-medium inline-flex items-center rounded"
-      >
-        <PostIcon :post="post">
-          <span class="text-sm">{{ post.date.since }}</span>
-        </posticon></span>
-    </div>
-    <h2 class="mb-2 text-2xl font-bold tracking-tight text-[color:var(--vp-c-brand-light)] dark:text-[color:var(--vp-c-brand-dark)]">
-      <a
-        :href="`${site.base}blog${post.href}`"
-      >{{ post.title }}</a>
-    </h2>
-    <p class="mb-5 font-light" v-html="post.excerpt" />
-    <div class="flex justify-between items-center">
-      <PostAuthor :author="author" />
-      <a
-        :href="`${site.base}blog${post.href}`"
-        class="inline-flex items-center font-medium hover:text-[color:var(--vp-c-brand-dark)]"
-      >
-        Read more
-        <svg class="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <path
-            fill-rule="evenodd"
-            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </a>
-    </div>
-  </article>
+    <article class="flex flex-row p-3 gap-3 items-stretch">
+      <!-- 左侧1:1正方形封面图 -->
+      <div class="flex-shrink-0 w-[28%] aspect-square overflow-hidden rounded-lg">
+        <img
+          v-if="post.data.cover"
+          :src="post.data.cover"
+          :alt="post.title"
+          class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+        >
+        <div
+          v-else
+          class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center"
+        >
+          <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- 右侧60%内容区域 -->
+      <div class="flex-1 flex flex-col min-w-0">
+        <!-- 标题 - 顶部对齐，无上边距 -->
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white hover:text-[color:var(--vp-c-brand-light)] transition-colors line-clamp-2 mb-3 leading-tight m-0 p-0">
+          {{ post.title }}
+        </h2>
+
+        <!-- 标签列表 - 中间 -->
+        <div v-if="post.data.tags && post.data.tags.length" class="flex flex-wrap gap-2 mb-3">
+          <span
+            v-for="tag in post.data.tags"
+            :key="tag"
+            class="px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md border border-blue-300 dark:border-blue-700"
+          >
+            #{{ tag }}
+          </span>
+        </div>
+
+        <!-- 底部区域：作者和发布时间分开 -->
+        <div class="mt-auto flex items-end justify-between">
+          <!-- 左下：作者 -->
+          <div class="text-xs">
+            <PostAuthor :author="author" />
+          </div>
+
+          <!-- 右下：发布时间 -->
+          <div class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            {{ post.date.since }}
+          </div>
+        </div>
+      </div>
+    </article>
+  </a>
 </template>
 
 <style scoped></style>

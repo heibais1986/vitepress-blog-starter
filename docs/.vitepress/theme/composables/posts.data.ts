@@ -30,29 +30,60 @@ export { data }
 async function load(): Promise<Post[]>
 async function load() {
   md = md || (await createMarkdownRenderer(process.cwd()))
-  return fs
-    .readdirSync(dir)
-    .map(file => getPost(file, dir))
-    .sort((a, b) => b.date.time - a.date.time)
+  const posts: Post[] = []
+
+  // 递归读取所有子文件夹中的 .md 文件
+  function readDirRecursive(dirPath: string, relativePath = '') {
+    const files = fs.readdirSync(dirPath)
+
+    files.forEach((file) => {
+      const fullPath = path.join(dirPath, file)
+      const stat = fs.statSync(fullPath)
+
+      if (stat.isDirectory()) {
+        // 递归读取子文件夹
+        readDirRecursive(fullPath, path.join(relativePath, file))
+      }
+      else if (file.endsWith('.md') && file !== 'index.md') {
+        // 读取 markdown 文件（排除 index.md）
+        const post = getPost(file, dirPath, relativePath)
+        if (post)
+          posts.push(post)
+      }
+    })
+  }
+
+  readDirRecursive(dir)
+  return posts.sort((a, b) => b.date.time - a.date.time)
 }
 
 export default {
-  watch: path.join(dir, '*.md'),
+  watch: path.join(dir, '**/*.md'),
   load,
 }
 
 const cache = new Map()
 
-function getPost(file: string, postDir: string): Post {
+function getPost(file: string, postDir: string, relativePath = ''): Post | null {
   const fullPath = path.join(postDir, file)
   const timestamp = fs.statSync(fullPath).mtimeMs
 
   const { data, excerpt } = readFrontMatter(file, postDir, cache)
 
+  // 如果没有 title 或 date，跳过这个文件
+  if (!data.title || !data.date) {
+    return null
+  }
+
+  // 构建正确的 URL 路径
+  const urlPath = relativePath
+    ? path.join(relativePath, file).replace(/\.md$/, '.html')
+    : file.replace(/\.md$/, '.html')
+
   const post: Post = {
     title: data.title,
     author: data.author ? data.author : 'Unknown',
-    href: `/posts/${file.replace(/\.md$/, '.html')}`,
+    href: `/posts/${urlPath.replace(/\\/g, '/')}`,
     date: formatDate(data.date),
     excerpt: excerpt && md.render(excerpt),
     data,

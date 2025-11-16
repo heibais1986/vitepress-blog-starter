@@ -1,43 +1,158 @@
-.DS_Store
-node_modules
-dist
-dist-ssr
+# ============================================
+# 依赖文件 (Dependencies)
+# ============================================
+node_modules/
+.pnp
+.pnp.js
 
-/cypress/videos/
-/cypress/screenshots/
-/instrumented
-/coverage
-.nyc_output
-
-.yarn
+# ============================================
+# 包管理器锁文件 (Lock files)
+# ============================================
+# 保留 pnpm-lock.yaml，忽略其他
 yarn.lock
+package-lock.json
+.yarn/
 .yarnrc.yml
 
-# local env files
+# ============================================
+# 构建产物 (Build outputs)
+# ============================================
+dist/
+dist-ssr/
+*.local
+
+# ============================================
+# VitePress 特定文件 (VitePress specific)
+# ============================================
+# 临时文件和缓存
+docs/.vitepress/.temp/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+.temp/
+cache/
+
+# ============================================
+# 环境变量文件 (Environment files)
+# ============================================
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
 .env.*.local
 
-# Log files
+# ============================================
+# 日志文件 (Log files)
+# ============================================
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
 
-# Editor directories and files
-.idea
+# ============================================
+# 操作系统文件 (OS files)
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================
+# 编辑器和 IDE (Editors and IDEs)
+# ============================================
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains IDEs (WebStorm, IntelliJ, etc.)
+.idea/
 *.iml
-.vscode
+*.iws
+*.ipr
+out/
+
+# Visual Studio
 *.suo
+*.user
+*.userosscache
+*.sln.docstates
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-*.log
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
 
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+Temporary Items
+.netrwhist
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ============================================
+# 测试覆盖率 (Test coverage)
+# ============================================
+coverage/
+*.lcov
+.nyc_output/
+/instrumented
+
+# Cypress
+/cypress/videos/
+/cypress/screenshots/
+
+# ============================================
+# 其他临时文件 (Other temp files)
+# ============================================
+*.tmp
+*.temp
+*.cache
+.cache/
+
+# 配置文件（根据需要调整）
 .gitconfig
 
-# vitepress
-docs/.vitepress/cache
-docs/.vitepress/dist
+# ============================================
+# 可选：不忽略的文件 (Optional: files to include)
+# ============================================
+# 如果你想保留某些通常被忽略的文件，使用 ! 前缀
+# 例如：
+# !.vscode/settings.json
