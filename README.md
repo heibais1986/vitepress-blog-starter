@@ -9,8 +9,56 @@
 </p>
 
 <p align="center">
-  专注于 VPN 分享、AI 教程、资源分享和工具导航的技术博客平台
+  专注于科学上网、AI工具、免费资源分享的技术博客 | 开箱即用 | SEO完善
 </p>
+
+<p align="center">
+  <a href="https://github.com/tansunyj/vitepress-blog-starter">
+    <img src="https://img.shields.io/github/stars/tansunyj/vitepress-blog-starter?style=social" alt="GitHub stars">
+  </a>
+  <a href="https://github.com/tansunyj/vitepress-blog-starter/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
+  </a>
+  <a href="https://github.com/tansunyj/vitepress-blog-starter">
+    <img src="https://img.shields.io/badge/VitePress-1.6.3-brightgreen.svg" alt="VitePress">
+  </a>
+</p>
+
+---
+
+## 🎉 为什么选择这个博客系统？
+
+### 🚀 真正的开箱即用
+
+- ✅ **克隆即用** - 无需复杂配置，3分钟启动博客
+- ✅ **SEO预配置** - GA4、AdSense、Search Console已集成
+- ✅ **关键词库** - 500+精选SEO关键词，直接导入SEMrush
+- ✅ **Sitemap自动生成** - 每次构建自动更新sitemap.xml
+- ✅ **完整文档** - CONFIGURATION.md详细配置指南
+
+### 📊 SEO优化到位
+
+- 🔍 **完整Meta标签** - title、description、keywords、og、twitter
+- 🤖 **搜索引擎友好** - robots.txt、sitemap.xml
+- 📈 **流量追踪** - Google Analytics (GA4)
+- 💰 **广告准备** - Google AdSense预配置
+- 🎯 **关键词研究** - 提供VPN、AI、资源等领域关键词库
+
+### 🎨 现代化UI设计
+
+- 🌟 **精美卡片** - 圆角、阴影、悬停动画
+- 🎭 **Banner横幅** - 可自定义的首页大图
+- 🏷️ **智能标签** - OR逻辑筛选，快速查找
+- 📱 **响应式** - 完美适配PC/平板/手机
+- 🎯 **易定制** - CSS变量系统，一键换主题
+
+### ⚡ 开发体验优秀
+
+- 🔥 **热更新** - 修改即刷新，秒速预览
+- 🛠️ **TypeScript** - 类型安全，减少错误
+- 📦 **pnpm** - 快速安装，节省空间
+- 🧹 **自动清理** - 一键清理缓存脚本
+- 📝 **Markdown** - 专注内容创作
 
 ---
 
@@ -38,7 +86,6 @@
 - 🔍 **SEO 优化** - 内置完整的 SEO meta 标签支持
 - 🎯 **分类管理** - 自动根据文件夹路径生成分类
 - 👤 **作者系统** - 支持多作者文章管理
-- 🌓 **深色模式** - 内置暗黑主题切换
 - 📱 **响应式设计** - 完美支持移动端和平板
 - 🔧 **自定义组件** - 丰富的自定义 Vue 组件
 - 🎭 **Banner横幅** - 可自定义的首页横幅
@@ -77,7 +124,7 @@
 #### 1. 克隆项目
 
 ```bash
-git clone https://github.com/your-username/vitepress-blog-starter.git
+git clone https://github.com/tansunyj/vitepress-blog-starter.git
 cd vitepress-blog-starter
 ```
 
@@ -97,14 +144,31 @@ pnpm dev
 
 启动成功后，访问：`http://localhost:5173`
 
-#### 4. 配置Google服务（可选）
+#### 4. 配置SEO和Google服务（推荐）
 
-查看 **[CONFIGURATION.md](./CONFIGURATION.md)** 了解如何配置：
-- Google Analytics (GA4)
-- Google AdSense  
-- Google Search Console
+本项目已预配置所有SEO工具，**只需替换ID即可使用**！
+
+查看 **[CONFIGURATION.md](./CONFIGURATION.md)** 获取详细配置指南：
+
+**必须配置项：**
+- 🌐 **网站域名** - 替换 `yourdomain.com` 为你的实际域名
+- 📊 **Google Analytics (GA4)** - 替换测量ID `G-XXXXXXXXXX`
+- 💰 **Google AdSense** - 替换发布商ID `ca-pub-XXXXXXXXXXXXXXXX`
+- 🔍 **Google Search Console** - 添加你的验证码
+
+**可选配置项：**
 - 百度站长验证
-- robots.txt 和 sitemap
+- 网站图标和Banner
+- 页脚信息
+
+**SEO文件位置：**
+- `docs/public/robots.txt` - 搜索引擎爬虫规则（已创建）
+- `docs/public/sitemap.xml` - 网站地图（构建时自动生成）
+- `docs/public/ads.txt` - AdSense验证（已创建）
+- `docs/.vitepress/config.mts` - SEO meta标签配置
+
+**SEO关键词库：**
+- `seo/` 文件夹包含500+精选关键词，可直接导入SEMrush查询
 
 ---
 
@@ -133,8 +197,7 @@ docs/posts/
 │   └── recommendations/ #   └─ 推荐
 └── resources/           # 📦 资源宝库
     ├── quark/           #   ├─ 夸克资料
-    ├── learning-materials/ #├─ 学习资料
-    └── software/        #   └─ 软件工具
+    └── learning-materials/ #└─ 学习资料
 ```
 
 ### ✍️ 文章格式规范
@@ -298,11 +361,24 @@ vitepress-blog-starter/
 │   │   └── index.md               # 博客首页
 │   ├── about/                     # 关于页面
 │   ├── public/                    # 静态资源
-│   │   └── images/                # 图片资源
+│   │   ├── images/                # 图片资源
+│   │   ├── robots.txt             # 爬虫规则
+│   │   ├── sitemap.xml            # 网站地图（自动生成）
+│   │   └── ads.txt                # AdSense验证
 │   └── index.md                   # 网站首页
+├── scripts/                       # 脚本目录
+│   └── generate-sitemap.js        # Sitemap自动生成脚本
+├── seo/                           # SEO关键词库 ⭐
+│   ├── vpn-keywords.txt           # VPN关键词（180+）
+│   ├── ai-keywords.txt            # AI关键词（200+）
+│   ├── blog-keywords.txt          # 博客关键词（150+）
+│   ├── all-keywords.txt           # 汇总（530+）
+│   ├── keyword-tracker-template.md # 数据追踪模板
+│   └── README.md                  # 使用指南
 ├── clean.ps1                      # 缓存清理脚本
 ├── package.json                   # 项目配置
 ├── pnpm-lock.yaml                 # 依赖锁定文件
+├── CONFIGURATION.md               # 配置指南（SEO、Google服务等）
 ├── SEO-FIELDS.md                  # SEO 字段说明文档
 ├── STRUCTURE.md                   # 项目结构文档
 └── README.md                      # 本文件
@@ -656,17 +732,6 @@ docs/.vitepress/theme/custom.css  →  CSS变量定义区域
 }
 ```
 
-### 🌓 深色模式
-
-深色模式自动切换，也可以自定义：
-
-```css
-.dark {
-  --vp-c-brand: #60a5fa;              /* 深色模式下的主题色 */
-  --bg-primary: #1a1a1a;              /* 深色背景 */
-}
-```
-
 ### 🎯 样式结构
 
 custom.css 分为8个章节：
@@ -745,6 +810,20 @@ npm run serve
 ```
 
 访问：`http://localhost:4173`
+
+### 生成Sitemap
+
+自动生成sitemap.xml：
+
+```bash
+# 手动生成sitemap
+pnpm sitemap
+
+# 或在构建时自动生成（已配置prebuild钩子）
+pnpm build
+```
+
+生成的文件：`docs/public/sitemap.xml`
 
 ### 清理缓存
 
@@ -858,7 +937,7 @@ jobs:
 
 ```typescript
 export default defineConfig({
-  base: '/your-repo-name/', // GitHub 仓库名
+  base: '/vitepress-blog-starter/', // 改为你的GitHub仓库名
   // ...其他配置
 })
 ```
@@ -871,7 +950,7 @@ git commit -m "Add GitHub Actions"
 git push
 ```
 
-部署完成后访问：`https://your-username.github.io/your-repo-name/`
+部署完成后访问：`https://tansunyj.github.io/vitepress-blog-starter/`
 
 ---
 
@@ -962,8 +1041,9 @@ MIT License
 
 **杰哥**
 
-- 网站：[你的网站](https://your-website.com)
-- GitHub：[@your-github](https://github.com/your-github)
+- GitHub：[@tansunyj](https://github.com/tansunyj)
+- QQ群：[749827914](https://qm.qq.com/q/rvVkbpLGlc)
+- Telegram：[杰哥的技术小站](https://t.me/jerry_tech_club)
 
 ---
 
@@ -973,4 +1053,4 @@ MIT License
 
 ---
 
-**最后更新时间**：2024-11-16
+**最后更新时间**：2025-11-17
