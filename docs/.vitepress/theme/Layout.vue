@@ -19,6 +19,13 @@ const isPostPage = computed(() => {
   return path.includes('/posts/') && path.endsWith('.html')
 })
 
+// 检测是否显示标签筛选组件（关于页面不显示）
+const showTagFilter = computed(() => {
+  const path = route.path
+  // 关于页面不显示标签筛选
+  return !path.includes('/about/')
+})
+
 // 获取当前分类的文章（用于侧边栏tags）
 const currentCategoryPosts = computed(() => {
   const path = route.path
@@ -71,9 +78,9 @@ useSidebarHighlight()
 
 <template>
   <Layout>
-    <!-- 侧边栏底部 - 添加Tags过滤 -->
+    <!-- 侧边栏底部 - 添加Tags过滤（关于页面不显示） -->
     <template #sidebar-nav-after>
-      <div class="sidebar-tags-wrapper">
+      <div v-if="showTagFilter" class="sidebar-tags-wrapper">
         <SidebarTagFilter :posts="currentCategoryPosts" @filter="handleTagFilter" />
       </div>
     </template>
