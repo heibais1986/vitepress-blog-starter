@@ -136,23 +136,15 @@ const { prevPost, nextPost } = usePosts()
   color: var(--vp-c-brand);
 }
 
-/* 上一篇左对齐 */
-.prev-post .nav-direction {
+/* 上一篇和下一篇都左对齐 */
+.prev-post .nav-direction,
+.next-post .nav-direction {
   justify-content: flex-start;
 }
 
-.prev-post .nav-title {
-  text-align: left;
-}
-
-/* 下一篇右对齐 */
-.next-post .nav-direction {
-  justify-content: flex-end;
-  flex-direction: row-reverse;
-}
-
+.prev-post .nav-title,
 .next-post .nav-title {
-  text-align: right;
+  text-align: left;
 }
 
 /* 响应式 */
@@ -175,16 +167,6 @@ const { prevPost, nextPost } = usePosts()
 
   .nav-title {
     font-size: 1rem;
-  }
-
-  /* 移动端统一左对齐 */
-  .next-post .nav-direction {
-    justify-content: flex-start;
-    flex-direction: row;
-  }
-
-  .next-post .nav-title {
-    text-align: left;
   }
 }
 </style>

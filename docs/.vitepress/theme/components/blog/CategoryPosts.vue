@@ -1,25 +1,25 @@
 <script setup lang='ts'>
-import { computed, ref } from 'vue'
+import type { Ref } from 'vue'
 import { useData, useRoute } from 'vitepress'
+import { computed, inject, ref } from 'vue'
 import usePosts from '../../composables/usePosts'
 import Post from './Post.vue'
-import TagFilter from './TagFilter.vue'
 
 const { allPosts } = usePosts()
 const route = useRoute()
 const { frontmatter } = useData()
 
-// 选中的标签
-const selectedTags = ref<string[]>([])
+// 注入选中的tags
+const selectedTags = inject<Ref<string[]>>('selectedTags', ref([]))
 
 // 获取当前路径对应的分类文章
 const categoryPosts = computed(() => {
-  // 获取当前路径，移除末尾斜杠和 /blog 前缀
+  // 获取当前路径，移除末尾斜杠
   let currentPath = route.path.replace(/\/$/, '')
   // 如果路径包含 /blog，移除它（因为文章 href 中没有 /blog）
   currentPath = currentPath.replace(/^\/blog/, '')
 
-  const filtered = allPosts.value.filter((post) => {
+  let filtered = allPosts.value.filter((post) => {
     // post.href 格式: /posts/vpn-proxy/tutorial/xxx.html
     const postPath = post.href.replace(/\.html$/, '')
     // 获取文章所在的目录路径
@@ -28,26 +28,17 @@ const categoryPosts = computed(() => {
     return postDir === currentPath
   })
 
-  return filtered
-})
-
-// 过滤后的文章（按标签过滤）
-const filteredPosts = computed(() => {
-  if (selectedTags.value.length === 0) {
-    return categoryPosts.value
+  // 如果有选中的tags，进行过滤（OR逻辑）
+  if (selectedTags.value.length > 0) {
+    filtered = filtered.filter((post) => {
+      const postTags = (post.frontmatter?.tags || post.data?.tags || []) as string[]
+      // 文章只要包含任意一个选中的标签就显示（OR逻辑）
+      return selectedTags.value.some(tag => postTags.includes(tag))
+    })
   }
 
-  return categoryPosts.value.filter((post) => {
-    const postTags = post.frontmatter?.tags || []
-    // 文章需要包含所有选中的标签
-    return selectedTags.value.every(tag => postTags.includes(tag))
-  })
+  return filtered
 })
-
-// 处理标签过滤
-function handleTagFilter(tags: string[]) {
-  selectedTags.value = tags
-}
 
 // 获取分类信息（从frontmatter或根据路径判断）
 const categoryInfo = computed(() => {
@@ -89,21 +80,15 @@ function getCategoryIcon(): string {
       <p v-if="categoryInfo.description" class="category-description" v-html="categoryInfo.description" />
     </div>
 
-    <!-- 标签过滤器 -->
-    <TagFilter :posts="categoryPosts" @filter="handleTagFilter" />
-
     <!-- 文章列表 -->
-    <div v-if="filteredPosts.length > 0" class="posts-grid">
-      <Post v-for="post in filteredPosts" :key="post.href" :post="post" />
+    <div v-if="categoryPosts.length > 0" class="posts-grid">
+      <Post v-for="post in categoryPosts" :key="post.href" :post="post" />
     </div>
 
     <!-- 空状态 -->
     <div v-else class="empty-state">
       <p class="empty-text">
-        {{ selectedTags.length > 0 ? '😔 没有找到匹配的文章' : '暂无文章' }}
-      </p>
-      <p v-if="selectedTags.length > 0" class="empty-hint">
-        请尝试选择其他标签组合
+        暂无文章
       </p>
     </div>
   </div>

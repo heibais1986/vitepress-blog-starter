@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import type { Post } from '../../composables/posts.data'
+import { computed } from 'vue'
 import useAuthors from '../../composables/useAuthors'
 import PostAuthor from './PostAuthor.vue'
 
@@ -8,6 +9,22 @@ const props = defineProps<{
 }>()
 const { findByName } = useAuthors()
 const author = findByName(props.post.author || '杰哥')
+
+// 将预览图URL转换为缩略图URL（用于列表卡片）
+const thumbnailUrl = computed(() => {
+  const coverUrl = props.post.data.cover
+  if (!coverUrl)
+    return ''
+
+  // 只对Cloudflare图床URL进行转换（包含 /previews/ 的URL）
+  // 本地相对路径（如 /images/xxx.png）保持不变
+  if (coverUrl.includes('/previews/')) {
+    return coverUrl.replace('/previews/', '/thumbnails/')
+  }
+
+  // 其他情况直接返回原URL
+  return coverUrl
+})
 </script>
 
 <template>
@@ -19,8 +36,8 @@ const author = findByName(props.post.author || '杰哥')
       <!-- 左侧1:1正方形封面图 -->
       <div class="flex-shrink-0 w-[28%] aspect-square overflow-hidden rounded-lg">
         <img
-          v-if="post.data.cover"
-          :src="post.data.cover"
+          v-if="thumbnailUrl"
+          :src="thumbnailUrl"
           :alt="post.title"
           class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
         >

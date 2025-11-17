@@ -1,6 +1,5 @@
 import Unocss from 'unocss/vite'
 import { defineConfig } from 'vitepress'
-import { version } from '../../package.json'
 
 export default defineConfig({
   base: '/',
@@ -67,14 +66,13 @@ export default defineConfig({
       '/posts/resources/': sidebarResources(),
       '/about/': sidebarAbout(),
     },
-    // @ts-expect-error - 自定义配置字段，VitePress类型定义中不存在
+    // @ts-expect-error 自定义配置字段
     blog: {
-      title: '你好，旅行者！',
-      description: '欢迎来到杰哥的技术小站！',
+      title: '欢迎来到杰哥的技术小站',
+      description: '',
       banner: '/images/banner.png',
     },
   },
-  ignoreDeadLinks: true,
   vite: {
     plugins: [
       Unocss({

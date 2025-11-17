@@ -24,21 +24,7 @@ const emit = defineEmits<{
 // 当前选中的标签
 const selectedTags = ref<string[]>([])
 
-// 从所有文章中收集标签
-const allTags = computed(() => {
-  const tagsSet = new Set<string>()
-  props.posts.forEach((post) => {
-    const tags = post.frontmatter?.tags || post.data?.tags
-    if (tags && Array.isArray(tags)) {
-      tags.forEach((tag: string) => {
-        tagsSet.add(tag)
-      })
-    }
-  })
-  return Array.from(tagsSet).sort()
-})
-
-// 每个标签的文章数量
+// 统计每个标签的文章数量
 const tagCounts = computed(() => {
   const counts: Record<string, number> = {}
   props.posts.forEach((post) => {
@@ -52,15 +38,25 @@ const tagCounts = computed(() => {
   return counts
 })
 
+// 从所有文章中收集标签，按文章数量降序排列
+const allTags = computed(() => {
+  const counts = tagCounts.value
+  const tags = Object.keys(counts)
+
+  // 按文章数量降序排序
+  tags.sort((a, b) => counts[b] - counts[a])
+
+  // 限制显示约40-50个tags（约10行，每行4-5个）
+  return tags.slice(0, 45)
+})
+
 // 切换标签选中状态
 function toggleTag(tag: string) {
   const index = selectedTags.value.indexOf(tag)
   if (index > -1) {
-    // 已选中，取消选中
     selectedTags.value.splice(index, 1)
   }
   else {
-    // 未选中，添加选中
     selectedTags.value.push(tag)
   }
   emit('filter', selectedTags.value)
@@ -79,26 +75,24 @@ function isTagSelected(tag: string): boolean {
 </script>
 
 <template>
-  <div v-if="allTags.length > 0" class="tag-filter">
-    <!-- 顶部信息栏 -->
+  <div v-if="allTags.length > 0" class="sidebar-tag-filter">
+    <!-- 标题栏 -->
     <div class="filter-header">
       <div class="filter-title">
         <span class="icon">🏷️</span>
         <span class="text">标签筛选</span>
-        <span v-if="selectedTags.length > 0" class="count">
-          ({{ selectedTags.length }} 个已选)
-        </span>
       </div>
       <button
         v-if="selectedTags.length > 0"
         class="clear-btn"
         @click="clearTags"
+        title="清除筛选"
       >
-        清除筛选
+        ✕
       </button>
     </div>
 
-    <!-- 标签列表 -->
+    <!-- 标签列表 - 横向换行布局 -->
     <div class="tags-list">
       <button
         v-for="tag in allTags"
@@ -107,29 +101,27 @@ function isTagSelected(tag: string): boolean {
         :class="{ active: isTagSelected(tag) }"
         @click="toggleTag(tag)"
       >
-        <span class="tag-name">{{ tag }}</span>
-        <span class="tag-count">{{ tagCounts[tag] }}</span>
+        {{ tag }}
       </button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.tag-filter {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
+.sidebar-tag-filter {
+  padding: 1rem;
   background-color: var(--vp-c-bg-soft);
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid var(--vp-c-divider);
 }
 
-/* 顶部信息栏 */
+/* 标题栏 */
 .filter-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--vp-c-divider);
 }
 
@@ -137,123 +129,72 @@ function isTagSelected(tag: string): boolean {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--vp-c-text-1);
 }
 
 .filter-title .icon {
-  font-size: 1.25rem;
-}
-
-.filter-title .count {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--vp-c-brand);
+  font-size: 1rem;
 }
 
 .clear-btn {
-  padding: 0.5rem 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
   font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--vp-c-brand);
+  color: var(--vp-c-text-3);
   background-color: transparent;
-  border: 1px solid var(--vp-c-brand);
-  border-radius: 6px;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .clear-btn:hover {
-  color: #fff;
-  background-color: var(--vp-c-brand);
+  color: var(--vp-c-brand);
+  background-color: var(--vp-c-bg);
 }
 
-/* 标签列表 */
+/* 标签列表 - 横向换行布局 */
 .tags-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem; /* 从0.75rem减小到0.5rem */
+  flex-wrap: wrap; /* 允许换行 */
+  gap: 0.375rem;
 }
 
 .tag-item {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem; /* 从0.5rem减小到0.375rem */
-  padding: 0.375rem 0.75rem; /* 从0.5rem 1rem减小到0.375rem 0.75rem */
-  font-size: 0.8125rem; /* 从0.875rem减小到0.8125rem (13px) */
+  padding: 0.25rem 0.5rem; /* 更紧凑的padding */
+  font-size: 0.6875rem; /* 11px - 更小的字体 */
   font-weight: 500;
   color: var(--vp-c-text-2);
   background-color: var(--vp-c-bg);
   border: 1px solid var(--vp-c-divider);
-  border-radius: 6px; /* 从8px减小到6px */
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .tag-item:hover {
   color: var(--vp-c-brand);
   border-color: var(--vp-c-brand);
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--vp-c-bg-soft);
 }
 
 .tag-item.active {
   color: #fff;
   background-color: var(--vp-c-brand);
   border-color: var(--vp-c-brand);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 .tag-item.active:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-}
-
-.tag-name {
-  line-height: 1;
-}
-
-.tag-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.25rem; /* 从1.5rem减小到1.25rem */
-  height: 1.25rem; /* 从1.5rem减小到1.25rem */
-  padding: 0 0.25rem; /* 从0.375rem减小到0.25rem */
-  font-size: 0.6875rem; /* 从0.75rem减小到0.6875rem (11px) */
-  font-weight: 600;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 8px; /* 从10px减小到8px */
-}
-
-.tag-item.active .tag-count {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* 响应式 */
-@media (max-width: 768px) {
-  .tag-filter {
-    padding: 1rem;
-  }
-
-  .filter-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .clear-btn {
-    width: 100%;
-  }
-
-  .tags-list {
-    gap: 0.375rem; /* 移动端进一步减小间距 */
-  }
-
-  .tag-item {
-    padding: 0.25rem 0.625rem; /* 移动端更紧凑 */
-    font-size: 0.75rem; /* 移动端字体更小 */
-  }
+  background-color: var(--vp-c-brand-dark);
 }
 </style>

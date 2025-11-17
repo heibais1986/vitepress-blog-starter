@@ -22,6 +22,10 @@ export interface Post {
   }
   excerpt: string | undefined
   data: Record<string, any>
+  frontmatter?: {
+    tags?: string[]
+    [key: string]: any
+  }
 }
 
 declare const data: Post[]
@@ -87,6 +91,7 @@ function getPost(file: string, postDir: string, relativePath = ''): Post | null 
     date: formatDate(data.date),
     excerpt: excerpt && md.render(excerpt),
     data,
+    frontmatter: data, // 添加frontmatter，指向data，包含tags等所有元数据
   }
 
   cache.set(fullPath, {
