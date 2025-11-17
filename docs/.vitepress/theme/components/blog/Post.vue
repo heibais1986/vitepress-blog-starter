@@ -14,9 +14,8 @@ const author = findByName(props.post.author || '杰哥')
   <a
     :href="post.href"
     class="block rounded-xl shadow-md hover:shadow-xl transition-all duration-300 bg-white dark:bg-gray-800 cursor-pointer post-card-link"
-    style="border: 4px solid #6b7280 !important;"
   >
-    <article class="flex flex-row p-3 gap-3 items-stretch">
+    <article class="flex flex-row p-4 gap-4 items-stretch">
       <!-- 左侧1:1正方形封面图 -->
       <div class="flex-shrink-0 w-[28%] aspect-square overflow-hidden rounded-lg">
         <img
@@ -47,7 +46,7 @@ const author = findByName(props.post.author || '杰哥')
           <span
             v-for="tag in post.data.tags"
             :key="tag"
-            class="px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md border border-blue-300 dark:border-blue-700"
+            class="px-3 py-1.5 text-xs font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-full border border-blue-200 dark:border-blue-700/50"
           >
             #{{ tag }}
           </span>

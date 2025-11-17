@@ -1,11 +1,12 @@
 <script setup lang='ts'>
-import { useRoute } from 'vitepress'
+import { useData, useRoute } from 'vitepress'
 import { computed } from 'vue'
 import usePosts from '../../composables/usePosts'
 import Post from './Post.vue'
 
 const { allPosts } = usePosts()
 const route = useRoute()
+const { frontmatter } = useData()
 
 // 获取当前路径对应的分类文章
 const categoryPosts = computed(() => {
@@ -25,18 +26,55 @@ const categoryPosts = computed(() => {
 
   return filtered
 })
+
+// 获取分类信息（从frontmatter或根据路径判断）
+const categoryInfo = computed(() => {
+  const description = frontmatter.value.description || ''
+  return {
+    description,
+    icon: getCategoryIcon(),
+  }
+})
+
+function getCategoryIcon(): string {
+  const path = route.path
+
+  if (path.includes('/vpn-proxy/free-nodes'))
+    return '🔔'
+  if (path.includes('/vpn-proxy/'))
+    return '🚀'
+  if (path.includes('/ai/'))
+    return '🤖'
+  if (path.includes('/blog/freebies'))
+    return '✨'
+  if (path.includes('/blog/'))
+    return '📚'
+  if (path.includes('/resources/'))
+    return '📦'
+
+  return '📄'
+}
 </script>
 
 <template>
-  <div class="category-posts-container">
+  <div class="category-posts-wrapper">
+    <!-- 分类标题区域 - 统一样式 -->
+    <div class="category-header">
+      <h1 class="category-title">
+        <span class="category-emoji">{{ categoryInfo.icon }}</span>
+        <span class="category-name">{{ frontmatter.title || '文章列表' }}</span>
+      </h1>
+      <p v-if="categoryInfo.description" class="category-description" v-html="categoryInfo.description" />
+    </div>
+
     <!-- 文章列表 -->
-    <div v-if="categoryPosts.length > 0" class="flex flex-col gap-6 mt-8">
+    <div v-if="categoryPosts.length > 0" class="posts-grid">
       <Post v-for="post in categoryPosts" :key="post.href" :post="post" />
     </div>
 
     <!-- 空状态 -->
-    <div v-else class="text-center py-16 text-gray-500 dark:text-gray-400">
-      <p class="text-lg">
+    <div v-else class="empty-state">
+      <p class="empty-text">
         暂无文章
       </p>
     </div>
@@ -44,9 +82,100 @@ const categoryPosts = computed(() => {
 </template>
 
 <style scoped>
-.category-posts-container {
-  max-width: var(--site-max-width, 1200px);
+/* 整体容器 - 跟首页一致的布局 */
+.category-posts-wrapper {
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 var(--site-padding-x, 32px);
+  padding: 0 1.5rem;
+  padding-top: 2rem;
+}
+
+/* 分类标题区域 - 简洁设计 */
+.category-header {
+  margin-bottom: 2.5rem;
+}
+
+/* 标题 - 一行文字 */
+.category-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--vp-c-text-1);
+  margin: 0 0 1rem 0;
+}
+
+.category-emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.category-name {
+  flex: 1;
+}
+
+/* 描述框 - 浅灰色提示块 */
+.category-description {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--vp-c-text-2);
+  margin: 0;
+  padding: 1rem 1.5rem;
+  background-color: var(--vp-c-bg-soft);
+  border-radius: 8px;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.category-description :deep(strong) {
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+/* 文章列表网格 - 单列布局 */
+.posts-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: var(--vp-c-bg-soft);
+  border-radius: 8px;
+  border: 1px dashed var(--vp-c-divider);
+}
+
+.empty-text {
+  font-size: 1.125rem;
+  color: var(--vp-c-text-2);
+  margin: 0;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .category-posts-wrapper {
+    padding: 1.5rem 1rem;
+  }
+
+  .category-title {
+    font-size: 1.5rem;
+  }
+
+  .category-emoji {
+    font-size: 1.5rem;
+  }
+
+  .category-description {
+    font-size: 0.875rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .posts-grid {
+    gap: 1.25rem;
+  }
 }
 </style>

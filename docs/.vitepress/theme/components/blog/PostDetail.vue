@@ -1,54 +1,163 @@
 <script setup lang="ts">
 import { useData } from 'vitepress'
+import { computed } from 'vue'
 import useAuthors from '../../composables/useAuthors'
 import usePosts from '../../composables/usePosts'
 
-const { site } = useData()
+const { frontmatter, page } = useData()
 
-const { currentPost: post, prevPost, nextPost } = usePosts()
+const { currentPost: post } = usePosts()
 const { findByName } = useAuthors()
-const author = findByName(post.value.author || '杰哥')
+
+// 如果 usePosts 找不到当前文章（比如 /posts/ 路径），使用 frontmatter
+const currentAuthorName = computed(() => {
+  if (post?.value?.author) {
+    return post.value.author
+  }
+  return frontmatter.value.author || '杰哥'
+})
+
+const currentTags = computed(() => {
+  if (post?.value?.data?.tags) {
+    return post.value.data.tags
+  }
+  return frontmatter.value.tags || []
+})
+
+const currentTitle = computed(() => {
+  if (post?.value?.title) {
+    return post.value.title
+  }
+  return frontmatter.value.title || page.value.title
+})
+
+const currentDate = computed(() => {
+  if (post?.value?.date) {
+    return post.value.date
+  }
+  // 为 frontmatter 的日期创建一个简单的显示格式
+  if (frontmatter.value.date) {
+    return {
+      string: frontmatter.value.date,
+      since: frontmatter.value.date,
+    }
+  }
+  return null
+})
+
+const author = findByName(currentAuthorName.value)
 </script>
 
 <template>
-  <div>
-    <div>
-      <div class="flex justify-between items-center mb-1 text-gray-500">
-        <PostAuthor :author="author" />
+  <div class="post-detail-header">
+    <!-- 文章标题 - 第一行，最显眼 -->
+    <h1 class="post-title">
+      {{ currentTitle }}
+    </h1>
 
-        <span
-          class="bg-primary-100  text-sm font-medium inline-flex items-center rounded"
-        >
-          <PostIcon :post="post" /></span>
-        <span class="text-sm">{{ post.date.since }}</span>
-      </div>
-      <h3 class="mb-2 mt-2 text-2xl font-bold tracking-tight text-[color:var(--vp-c-brand-light)] dark:text-[color:var(--vp-c-brand-dark)]">
-        <span>{{ post.title }}</span>
-      </h3>
-      <div class="flex justify-between items-center mt-2 text-gray-500">
-        <a
-          v-if="prevPost" :href="`${site.base}blog${prevPost.href}`"
-          class="inline-flex items-center font-medium dark:text-white hover:text-[color:var(--vp-c-brand-dark)]"
-        >
-          <div class="i-bx:arrow-back mr-2" />
-          <span>Previous Post</span>
-        </a>
-        <div v-if="!prevPost" />
-        <a
-          v-if="nextPost" :href="`${site.base}blog${nextPost.href}`"
-          class="inline-flex items-center font-medium dark:text-white hover:text-[color:var(--vp-c-brand-dark)]"
-        >
-          <span>Next Post</span>
-          <div class="i-bx:right-arrow-alt ml-2" />
-        </a>
-      </div>
+    <!-- 元信息 - 小字，灰色 -->
+    <div class="post-meta">
+      <PostAuthor :author="author" />
+      <span class="meta-separator">|</span>
+      <span v-if="currentDate" class="meta-date">{{ currentDate.since }}</span>
+      <span v-if="post" class="meta-separator">|</span>
+      <span v-if="post" class="meta-category">
+        <PostIcon :post="post" />
+      </span>
     </div>
-    <slot />
+
+    <!-- 标签列表 -->
+    <div v-if="currentTags && currentTags.length > 0" class="post-tags">
+      <span
+        v-for="tag in currentTags"
+        :key="tag"
+        class="tag-item"
+      >
+        #{{ tag }}
+      </span>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.vp-doc h1, h2, h3, hr {
-  margin: 12px 0 0 0;
+.post-detail-header {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+/* 标题 - 第一行，大而醒目 */
+.post-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+  font-family: var(--font-family-heading);
+}
+
+/* 元信息 - 小字，灰色 */
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin-bottom: 1rem;
+}
+
+.meta-separator {
+  color: var(--text-muted);
+  margin: 0 0.75rem;
+  opacity: 0.3;
+  font-weight: 300;
+}
+
+.meta-date {
+  color: var(--text-tertiary);
+}
+
+.meta-category {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 标签列表 */
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.tag-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  background: var(--bg-tertiary);
+  color: var(--vp-c-brand);
+  border: 1px solid var(--vp-c-brand-light);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  cursor: default;
+}
+
+.tag-item:hover {
+  background: var(--vp-c-brand-light);
+  color: white;
+  border-color: var(--vp-c-brand);
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .post-title {
+    font-size: 1.75rem;
+  }
+
+  .post-meta {
+    font-size: 0.8125rem;
+  }
 }
 </style>

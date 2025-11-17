@@ -1,10 +1,6 @@
 ---
 title: VPN教程
-description: VPN使用教程和技巧
+description: <strong>📖 完整教程</strong> | 全面的VPN使用教程，从入门到精通。帮助你快速掌握科学上网技巧！
 ---
-
-# VPN教程
-
-全面的VPN使用教程，帮助你快速上手。
 
 <CategoryPosts />
